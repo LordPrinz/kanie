@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import testCommand from "./commands/ping.js";
 import commandsSetup from "../src/commands/commandsSetup.js";
 import pingInteraction from "../src/interactions/pingInteraction.js";
+import getAgentNames from "./commands/valorant/agentNames.js"
+import agentNamesInter from "./interactions/valorant/agentNamesInter.js"
 dotenv.config({});
 
 const client = new Client({
@@ -18,8 +20,10 @@ const client = new Client({
 
 client.on("ready", () => {
   console.log("Bot is now working");
+
   const commands = commandsSetup(client);
   testCommand(commands);
+  getAgentNames(commands);
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -32,6 +36,10 @@ client.on("interactionCreate", async (interaction) => {
   } = interaction;
   if (commandName === 'ping') {
     pingInteraction(interaction);
+  } else if (commandName === 'agents') {
+    const region = options.getString('region')
+    const locale = options.getString('locale')
+    agentNamesInter(interaction, region, locale);
   }
 })
 

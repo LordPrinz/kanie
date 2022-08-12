@@ -8,6 +8,8 @@ import commandsSetup from "../src/commands/commandsSetup.js";
 import pingInteraction from "../src/interactions/pingInteraction.js";
 import getAgentNames from "./commands/valorant/agentNames.js"
 import agentNamesInter from "./interactions/valorant/agentNamesInter.js"
+import getLeaderboard from "./commands/valorant/leaderboard.js"
+import leaderboardInter from "./interactions/valorant/leaderboardInter.js"
 dotenv.config({});
 
 const client = new Client({
@@ -24,6 +26,7 @@ client.on("ready", () => {
   const commands = commandsSetup(client);
   testCommand(commands);
   getAgentNames(commands);
+  getLeaderboard(commands);
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -40,6 +43,25 @@ client.on("interactionCreate", async (interaction) => {
     const region = options.getString('region')
     const locale = options.getString('locale')
     agentNamesInter(interaction, region, locale);
+  } else if (commandName === 'leaderboard') {
+    const region = options.getString('region')
+    const size = options.getNumber('size') || 20;
+    if (size < 1 || size > 30) {
+      interaction.reply({
+        content: `Invalid size '${size}'. Valid values: 1 to 30`,
+        ephemeral: true
+      })
+      return;
+    }
+    const startindex = options.getNumber('startindex') || 0;
+    if (startindex < 0) {
+      interaction.reply({
+        content: `Invalid start index '${startindex}'.`,
+        ephemeral: true
+      })
+      return;
+    }
+    await leaderboardInter(interaction, region, size, startindex);
   }
 })
 

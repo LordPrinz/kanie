@@ -1,24 +1,19 @@
 import dotenv from "dotenv";
-import fetch from "node-fetch";
+import getValContent from "./../../data/valContent.js"
 dotenv.config({});
 
-const api = process.env.API;
-
 export default async function agentNamesInter(interaction, region, locale) {
-    const url = `https://${region}.api.riotgames.com/val/content/v1/contents?locale=${locale}&api_key=${api}`;
-    const response = await fetch(url);
-
-    if (response.status !== 200) {
+    const valContent = await getValContent(region, locale);
+    if (!valContent) {
         interaction.reply({
-            content: `Something went wrong (error ${response.status})`,
-            ephemeral: true
-        });
+            content: "Something went wrong. Please try again later.",
+            ephemeral: true,
+        })
         return;
     }
 
-    const json = await response.json();
     const agents = [];
-    const characters = json.characters
+    const characters = valContent.characters
     for (let index in characters) {
         if (!agents.includes(characters[index].name)) {
             agents.push(characters[index].name);

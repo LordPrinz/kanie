@@ -2,7 +2,7 @@ import getValContent from "./../../data/valContent.js";
 import getValRanked from "./../../data/valRanked.js";
 
 export default async function leaderboardInter(interaction, region, size, startindex) {
-    await interaction.deferReply({})
+    await interaction.deferReply({});
 
     await new Promise((resolve) => {
         setTimeout(resolve, 2000);
@@ -18,7 +18,7 @@ export default async function leaderboardInter(interaction, region, size, starti
     }
 
     const acts = valContent.acts
-    const activeAct = acts.find(acts => acts.isActive && acts.type === 'act');
+    const activeAct = acts.find(acts => acts.isActive === true && acts.type === 'act');
     const activeActId = activeAct.id;
     const valRanked = await getValRanked(activeActId, size, startindex, region);
 
@@ -60,9 +60,9 @@ export default async function leaderboardInter(interaction, region, size, starti
             content: `Too many characters (${message.length}). Try to lower the size.`,
         })
         return;
-    }
+    };
 
     await interaction.editReply({
         content: message,
-    })
+    });
 }
